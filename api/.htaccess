@@ -1,0 +1,14 @@
+# Allow access to PHP files
+<Files *.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Enable URL rewriting
+RewriteEngine On
+
+# Set API response headers
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+Header set Content-Type "application/json; charset=utf-8"
