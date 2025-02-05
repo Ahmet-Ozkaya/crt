@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $location = $_POST['location'];
     $job_type_preference = $_POST['job_type_preference'];
     $salary_range = $_POST['salary_range'];
-    $remote_preference = $_POST['remote_preference'];
+    $remote_preference = isset($_POST['remote_preference']) ? $_POST['remote_preference'] : 'No';
     $level = $_POST['level'];
     $bio_photo = $_POST['bio_photo'];
     $work_history = $_POST['work_history'];
@@ -36,4 +36,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 // Close the connection
 $conn->close();
-?>

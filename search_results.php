@@ -10,18 +10,37 @@ $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 // Get search parameters from the URL
 $jobTitle = isset($_GET['job-title']) ? $_GET['job-title'] : '';
 $jobLocation = isset($_GET['job-location']) ? $_GET['job-location'] : '';
+$JobDate = isset($_GET['job-date']) ? $_GET['job-date'] : '';
 
 // Calculate the offset
 $offset = ($currentPage - 1) * $rowsPerPage;
 
 // Build the query based on search parameters
-$query = "SELECT * FROM employees WHERE 1=1";
+/* $query = "SELECT * FROM employees WHERE 1=1";
 if (!empty($jobTitle)) {
     $query .= " AND job_title LIKE '%$jobTitle%'";
 }
 if (!empty($jobLocation)) {
     $query .= " AND location LIKE '%$jobLocation%'";
 }
+ */
+
+//New Query to get the employees who have not been booked
+$query = "SELECT `employees`.`id`, `employees`.`user_id`, `employees`.`full_name`, `employees`.`bio_photo`, `employees`.`location`, `employees`.`job_title`, `employees`.`job_type_preference`, `bookings`.`booking_id`, `bookings`.`employee_id`, `bookings`.`booking_date`, `bookings`.`status`, `bookings`.`start_time`, `bookings`.`end_time` FROM `employees` 
+LEFT JOIN `bookings` ON `bookings`.`employee_id` = `employees`.`user_id` 
+WHERE `bookings`.`status` IS NULL";
+
+if (!empty($jobTitle)) {
+    $query .= " AND job_title LIKE '%$jobTitle%'";
+}
+if (!empty($jobLocation)) {
+    $query .= " AND location LIKE '%$jobLocation%'";
+}
+if (!empty($JobDate)) {
+    $query .= " AND booking_date = '$JobDate'";
+}
+
+
 $query .= " ORDER BY id DESC LIMIT $offset, $rowsPerPage";
 
 $result = mysqli_query($conn, $query);
@@ -75,17 +94,17 @@ $totalPages = ceil($totalEmployees / $rowsPerPage);
 
                                     <p class="job-date mb-0">
                                         <i class="custom-icon bi-clock me-1"></i>
-                                        <?= $employee['level'] ?>
+                                        <?= $employee['booking_date'] ?>
                                     </p>
 
-                                    <p class="job-price mb-0">
-                                        <i class="custom-icon bi-cash me-1"></i>
-                                        $<?= $employee['salary_range'] ?>
-                                    </p>
-
-                                    <div class="d-flex">
+                                    <div class="d-flex align-items-start">
                                         <p class="mb-0">
-                                            <a href="#" class="badge badge-level"><?= $employee['level'] ?></a>
+                                            <a href="#" class="badge badge-level"><?= $employee['status'] ? $employee['status'] : 'Available' ?></a>
+                                        </p>
+
+                                        <p class="job-price mb-0">
+                                            <i class="custom-icon bi-cash me-1"></i>
+                                            400
                                         </p>
 
                                         <p class="mb-0">
@@ -93,6 +112,9 @@ $totalPages = ceil($totalEmployees / $rowsPerPage);
                                         </p>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="job-section-btn-wrap">
+                                <a href="employee_details.php?id=<?= $employee['id'] ?>" class="custom-btn btn">Book CRT</a>
                             </div>
 
                             <div class="job-section-btn-wrap">

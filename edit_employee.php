@@ -103,7 +103,7 @@ if (!$employee) {
                     <label>Remote Preference</label>
                     <div class="form-value">
                         <label class="switch">
-                            <input type="checkbox" name="remote_preference" <?= $employee['remote_preference'] == 'yes' ? 'checked' : '' ?>>
+                            <input type="checkbox" name="remote_preference" value="yes" <?= $employee['remote_preference'] == 'yes' ? 'checked' : '' ?>>
                             <span class="slider round"></span>
                         </label>
                     </div>
@@ -197,10 +197,17 @@ if (!$employee) {
         $('#editEmployeeForm').submit(function(e) {
             e.preventDefault();
 
+            var formData = $(this).serializeArray();
+            var remotePreference = $('input[name="remote_preference"]').is(':checked') ? 'yes' : 'no';
+            formData.push({
+                name: 'remote_preference',
+                value: remotePreference
+            });
+
             $.ajax({
                 url: 'update_employee.php',
                 type: 'POST',
-                data: $(this).serialize(),
+                data: $.param(formData),
                 success: function(response) {
                     window.location.href = 'employees.php';
                 },
