@@ -46,7 +46,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Remote Preference</label>
-                <p class="form-value"><?= htmlspecialchars($employee['remote_preference']) ?></p>
+                <p class="form-value"><?= $employee['remote_preference'] == 1 ? 'Yes' : 'No' ?></p>
             </div>
         </div>
         <div class="col-md-6">
