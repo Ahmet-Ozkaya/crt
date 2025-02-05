@@ -101,13 +101,13 @@ if (!$employee) {
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Remote Preference</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi-house custom-icon"></i></span>
-                        <select name="remote_preference" class="form-control form-control-sm">
-                            <option value="yes" <?= $employee['remote_preference'] == 'yes' ? 'selected' : '' ?>>Yes</option>
-                            <option value="no" <?= $employee['remote_preference'] == 'no' ? 'selected' : '' ?>>No</option>
-                        </select>
+                    <div class="form-value">
+                        <label class="switch">
+                            <input type="checkbox" name="remote_preference" <?= $employee['remote_preference'] == 'yes' ? 'checked' : '' ?>>
+                            <span class="slider round"></span>
+                        </label>
                     </div>
+
                 </div>
             </div>
 
@@ -193,23 +193,23 @@ if (!$employee) {
 
 <script src="js/jquery.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('#editEmployeeForm').submit(function(e) {
-        e.preventDefault();
+    $(document).ready(function() {
+        $('#editEmployeeForm').submit(function(e) {
+            e.preventDefault();
 
-        $.ajax({
-            url: 'update_employee.php',
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function(response) {
-                window.location.href = 'employees.php';
-            },
-            error: function() {
-                $('#responseMessage').html('Error updating employee');
-            }
+            $.ajax({
+                url: 'update_employee.php',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    window.location.href = 'employees.php';
+                },
+                error: function() {
+                    $('#responseMessage').html('Error updating employee');
+                }
+            });
         });
     });
-});
 </script>
 
 <?php require_once 'includes/template/footer.php'; ?>
