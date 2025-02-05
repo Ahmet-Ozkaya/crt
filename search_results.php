@@ -7,15 +7,33 @@ $rowsPerPage = 5;
 // Get the current page number from the URL, default to 1 if not set
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
+// Get search parameters from the URL
+$jobTitle = isset($_GET['job-title']) ? $_GET['job-title'] : '';
+$jobLocation = isset($_GET['job-location']) ? $_GET['job-location'] : '';
+
 // Calculate the offset
 $offset = ($currentPage - 1) * $rowsPerPage;
 
-// Query to fetch employees with pagination
-$query = "SELECT * FROM employees ORDER BY id DESC LIMIT $offset, $rowsPerPage";
+// Build the query based on search parameters
+$query = "SELECT * FROM employees WHERE 1=1";
+if (!empty($jobTitle)) {
+    $query .= " AND job_title LIKE '%$jobTitle%'";
+}
+if (!empty($jobLocation)) {
+    $query .= " AND location LIKE '%$jobLocation%'";
+}
+$query .= " ORDER BY id DESC LIMIT $offset, $rowsPerPage";
+
 $result = mysqli_query($conn, $query);
 
-// Query to get the total number of employees
-$totalQuery = "SELECT COUNT(*) as total FROM employees";
+// Query to get the total number of employees based on search parameters
+$totalQuery = "SELECT COUNT(*) as total FROM employees WHERE 1=1";
+if (!empty($jobTitle)) {
+    $totalQuery .= " AND job_title LIKE '%$jobTitle%'";
+}
+if (!empty($jobLocation)) {
+    $totalQuery .= " AND location LIKE '%$jobLocation%'";
+}
 $totalResult = mysqli_query($conn, $totalQuery);
 $totalRow = mysqli_fetch_assoc($totalResult);
 $totalEmployees = $totalRow['total'];
@@ -23,13 +41,14 @@ $totalEmployees = $totalRow['total'];
 // Calculate the total number of pages
 $totalPages = ceil($totalEmployees / $rowsPerPage);
 ?>
+<?php include 'includes\template\header.php'; ?>
+<?php include 'includes\template\navbar.php'; ?>
 
 <section class="job-section job-featured-section section-padding" id="job-section">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                <h2>Latest CRTs</h2>
-                <p>Browse through our featured CRTs and find your next team member.</p>
+                <h2>Search Results</h2>
             </div>
 
             <div class="col-lg-12 col-12">
@@ -89,22 +108,34 @@ $totalPages = ceil($totalEmployees / $rowsPerPage);
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-5">
             <li class="page-item <?php if ($currentPage == 1) echo 'disabled'; ?>">
-                <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
+                <a class="page-link" href="?page=<?= $currentPage - 1 ?>&job-title=<?= urlencode($jobTitle) ?>&job-location=<?= urlencode($jobLocation) ?>" aria-label="Previous">
                     <span aria-hidden="true">Prev</span>
                 </a>
             </li>
 
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                 <li class="page-item <?php if ($i == $currentPage) echo 'active'; ?>">
-                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                    <a class="page-link" href="?page=<?= $i ?>&job-title=<?= urlencode($jobTitle) ?>&job-location=<?= urlencode($jobLocation) ?>"><?= $i ?></a>
                 </li>
             <?php endfor; ?>
 
             <li class="page-item <?php if ($currentPage == $totalPages) echo 'disabled'; ?>">
-                <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
+                <a class="page-link" href="?page=<?= $currentPage + 1 ?>&job-title=<?= urlencode($jobTitle) ?>&job-location=<?= urlencode($jobLocation) ?>" aria-label="Next">
                     <span aria-hidden="true">Next</span>
                 </a>
             </li>
         </ul>
     </nav>
 </section>
+<?php include 'includes\template\footerbanner.php'; ?>
+<?php include 'includes\template\footer.php'; ?>
+<!-- JAVASCRIPT FILES -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/counter.js"></script>
+<script src="js/custom.js"></script>
+
+</body>
+
+</html>
