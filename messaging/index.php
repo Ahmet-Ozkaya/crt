@@ -41,13 +41,13 @@ if ($receiver_id) {
                 </div>
                 <form action="send_message.php" method="POST">
                     <input type="hidden" name="receiver_id" value="<?= $receiver_id ?>">
-                    <textarea name="content" placeholder="Type your message..." required></textarea>
+                    <textarea id="messageContent" name="content" placeholder="Type your message..." required></textarea>
 
                     <div class="d-flex flex-wrap align-items-center mt-4 mt-lg-0">
                         <span class="text-white mb-lg-0 mb-md-0 me-2">Popular keywords:</span>
                         <div>
-                            <a href="#" class="badge">Are you available tomorrow?</a>
-                            <a href="#" class="badge">Sorry I am busy!</a>
+                            <a href="#" class="badge" onclick="insertBadgeContent('Are you available tomorrow?')">Are you available tomorrow?</a>
+                            <a href="#" class="badge" onclick="insertBadgeContent('Sorry I am busy!')">Sorry I am busy!</a>
                         </div>
                     </div>
                     <button type="submit">Send</button>
@@ -59,5 +59,10 @@ if ($receiver_id) {
     </div>
     <?php require '../includes/template/footer.php'; ?>
     </body>
+    <script>
+        function insertBadgeContent(content) {
+            document.getElementById('messageContent').value = content;
+        }
+    </script>
 
     </html>
