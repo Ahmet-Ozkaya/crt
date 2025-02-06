@@ -26,11 +26,12 @@ if ($receiver_id) {
 ?>
 <?php include '../includes/template/header.php'; ?>
 <?php include '../includes/template/navbar.php'; ?>
-<div class="container">
+</br>
+<div class="job-thumb d-flex">
     <div class="chat">
         <?php if ($receiver_id): ?>
-            <h2>Chat with <?= $users[array_search($receiver_id, array_column($users, 'id'))]['email'] ?></h2>
-            <div class="messages">
+            <h5>Chat with <?= $users[array_search($receiver_id, array_column($users, 'id'))]['email'] ?></h5>
+            <div class="content">
                 <?php foreach ($messages as $message): ?>
                     <div class="message <?= $message['sender_id'] == $user_id ? 'sent' : 'received' ?>">
                         <p><?= htmlspecialchars($message['content']) ?></p>
