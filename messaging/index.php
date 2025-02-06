@@ -26,36 +26,38 @@ if ($receiver_id) {
 ?>
 <?php include '../includes/template/header.php'; ?>
 <?php include '../includes/template/navbar.php'; ?>
-</br>
-<div class="job-thumb d-flex">
-    <div class="chat">
-        <?php if ($receiver_id): ?>
-            <h5>Chat with <?= $users[array_search($receiver_id, array_column($users, 'id'))]['email'] ?></h5>
-            <div class="content">
-                <?php foreach ($messages as $message): ?>
-                    <div class="message <?= $message['sender_id'] == $user_id ? 'sent' : 'received' ?>">
-                        <p><?= htmlspecialchars($message['content']) ?></p>
-                        <small><?= $message['sent_at'] ?></small>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-            <form action="send_message.php" method="POST">
-                <input type="hidden" name="receiver_id" value="<?= $receiver_id ?>">
-                <textarea name="content" placeholder="Type your message..." required></textarea>
-                <p class="mb-0">
-                    <a href="#" class="badge">Are you available tomorrow?</a>
-                </p>
-                <p class="mb-0">
-                    <a href="#" class="badge">Sorry I am busy!</a>
-                </p>
-                <button type="submit">Send</button>
-            </form>
-        <?php else: ?>
-            <p>Select a user to start chatting.</p>
-        <?php endif; ?>
-    </div>
-</div>
-<?php require '../includes/template/footer.php'; ?>
-</body>
+<div class="flex-container">
+    <div class="job-thumb d-flex">
+        <div class="chat">
+            <?php if ($receiver_id): ?>
+                <h5>Chat with <?= $users[array_search($receiver_id, array_column($users, 'id'))]['email'] ?></h5>
+                <div class="content">
+                    <?php foreach ($messages as $message): ?>
+                        <div class="message <?= $message['sender_id'] == $user_id ? 'sent' : 'received' ?>">
+                            <p><?= htmlspecialchars($message['content']) ?></p>
+                            <small><?= $message['sent_at'] ?></small>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <form action="send_message.php" method="POST">
+                    <input type="hidden" name="receiver_id" value="<?= $receiver_id ?>">
+                    <textarea name="content" placeholder="Type your message..." required></textarea>
 
-</html>
+                    <div class="d-flex flex-wrap align-items-center mt-4 mt-lg-0">
+                        <span class="text-white mb-lg-0 mb-md-0 me-2">Popular keywords:</span>
+                        <div>
+                            <a href="#" class="badge">Are you available tomorrow?</a>
+                            <a href="#" class="badge">Sorry I am busy!</a>
+                        </div>
+                    </div>
+                    <button type="submit">Send</button>
+                </form>
+            <?php else: ?>
+                <p>Select a user to start chatting.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php require '../includes/template/footer.php'; ?>
+    </body>
+
+    </html>

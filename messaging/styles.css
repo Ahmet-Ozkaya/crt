@@ -67,3 +67,8 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+}
