@@ -42,6 +42,12 @@ if ($receiver_id) {
             <form action="send_message.php" method="POST">
                 <input type="hidden" name="receiver_id" value="<?= $receiver_id ?>">
                 <textarea name="content" placeholder="Type your message..." required></textarea>
+                <p class="mb-0">
+                    <a href="#" class="badge">Are you available tomorrow?</a>
+                </p>
+                <p class="mb-0">
+                    <a href="#" class="badge">Sorry I am busy!</a>
+                </p>
                 <button type="submit">Send</button>
             </form>
         <?php else: ?>
