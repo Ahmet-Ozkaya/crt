@@ -115,7 +115,7 @@ $totalPages = ceil($totalEmployees / $rowsPerPage);
                             </div>
 
                             <div class="job-section-btn-wrap">
-                                <a href="employee_details.php?id=<?= $employee['id'] ?>" class="custom-btn btn">Message</a>
+                                <a href="/messaging/index.php?receiver_id=<?= $employee['id'] ?>" class="custom-btn btn">Message</a>
                             </div>
 
                             <div class="job-section-btn-wrap">
