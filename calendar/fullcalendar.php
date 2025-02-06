@@ -1,23 +1,36 @@
-<!-- @format -->
+<?php
+require '../db.php'; // Include the database connection file
 
+// Fetch data from the database
+/*
+$query = "SELECT e.company_name AS employer_name, em.full_name AS employee_name, b.status, b.booking_date
+                      FROM bookings b
+                      JOIN employers e ON b.employer_id = e.id
+                      JOIN employees em ON b.employee_id = em.id";
+*/
+$query = "SELECT `bookings`.*, `employees`.*
+FROM `bookings` 
+	LEFT JOIN `employees` ON `bookings`.`employee_id` = `employees`.`user_id`;";
+
+$result = mysqli_query($conn, $query);
+if (!$result) {
+    error_log("Query failed: " . mysqli_error($conn));
+    $bookings = [];
+} else {
+    $bookings = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+?>
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>FullCalendar by Creative Tim</title>
-
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
     <link href="assets/css/fullcalendar.css" rel="stylesheet" />
-    <link
-        href="assets/css/fullcalendar.print.css"
-        rel="stylesheet"
-        media="print" />
+    <link href="assets/css/fullcalendar.print.css" rel="stylesheet" media="print" />
     <script src="assets/js/jquery-1.10.2.js" type="text/javascript"></script>
-    <script
-        src="assets/js/jquery-ui.custom.min.js"
-        type="text/javascript"></script>
+    <script src="assets/js/jquery-ui.custom.min.js" type="text/javascript"></script>
     <script src="assets/js/fullcalendar.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
@@ -27,14 +40,11 @@
             var y = date.getFullYear();
 
             /*  className colors
-
-		className: default(transparent), important(red), chill(pink), success(green), info(blue)
-
-		*/
+                className: default(transparent), important(red), chill(pink), success(green), info(blue)
+            */
 
             /* initialize the external events
-		-----------------------------------------------------------------*/
-
+            -----------------------------------------------------------------*/
             $("#external-events div.external-event").each(function() {
                 // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
                 // it doesn't need to have a start or end
@@ -54,8 +64,7 @@
             });
 
             /* initialize the calendar
-		-----------------------------------------------------------------*/
-
+            -----------------------------------------------------------------*/
             var calendar = $("#calendar").fullCalendar({
                 header: {
                     left: "title",
@@ -110,8 +119,6 @@
                     copiedEventObject.start = date;
                     copiedEventObject.allDay = allDay;
 
-                    // render the event on the calendar
-                    // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
                     $("#calendar").fullCalendar("renderEvent", copiedEventObject, true);
 
                     // is the "remove after drop" checkbox checked?
@@ -121,65 +128,16 @@
                     }
                 },
 
-                events: [{
-                        title: "All Day Event",
-                        start: new Date(y, m, 1),
-                    },
-                    {
-                        id: 999,
-                        title: "Repeating Event",
-                        start: new Date(y, m, d - 3, 16, 0),
-                        allDay: false,
-                        className: "info",
-                    },
-                    {
-                        id: 999,
-                        title: "Repeating Event",
-                        start: new Date(y, m, d + 4, 16, 0),
-                        allDay: false,
-                        className: "info",
-                    },
-                    {
-                        title: "Meeting",
-                        start: new Date(y, m, d, 10, 30),
-                        allDay: false,
-                        className: "important",
-                    },
-                    {
-                        title: "Lunch",
-                        start: new Date(y, m, d, 12, 0),
-                        end: new Date(y, m, d, 14, 0),
-                        allDay: false,
-                        className: "important",
-                    },
-                    {
-                        title: "Lunch",
-                        start: new Date(y, m, d, 12, 0),
-                        end: new Date(y, m, d, 14, 0),
-                        allDay: false,
-                        className: "info",
-                    },
-                    {
-                        title: "Lunch",
-                        start: new Date(y, m, d, 12, 0),
-                        end: new Date(y, m, d, 14, 0),
-                        allDay: false,
-                        className: "success",
-                    },
-
-                    {
-                        title: "Birthday Party",
-                        start: new Date(y, m, d + 1, 19, 0),
-                        end: new Date(y, m, d + 1, 22, 30),
-                        allDay: false,
-                    },
-                    {
-                        title: "Click for Google",
-                        start: new Date(y, m, 28),
-                        end: new Date(y, m, 29),
-                        url: "http://google.com/",
-                        className: "success",
-                    },
+                events: [
+                    <?php if (is_array($bookings) && count($bookings) > 0): ?>
+                        <?php foreach ($bookings as $booking): ?> {
+                                title: "<?php echo addslashes($booking['full_name']) . ' - ' . addslashes($booking['status']); ?>",
+                                start: "<?php echo $booking['booking_date']; ?>",
+                                allDay: true,
+                                className: "<?php echo $booking['status']; ?>",
+                            },
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 ],
             });
         });
@@ -246,7 +204,6 @@
 <body>
     <div id="wrap">
         <div id="calendar"></div>
-
         <div style="clear: both"></div>
     </div>
 </body>
