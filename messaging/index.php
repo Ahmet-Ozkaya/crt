@@ -47,6 +47,7 @@ if ($receiver_id) {
                         <span class="text-white mb-lg-0 mb-md-0 me-2">Popular keywords:</span>
                         <div>
                             <a href="#" class="badge" onclick="insertBadgeContent('Are you available tomorrow?')">Are you available tomorrow?</a>
+                            <a href="#" class="badge" onclick="insertBadgeContent('Yes, I am available tomorrow!')">Yes, I am available tomorrow!</a>
                             <a href="#" class="badge" onclick="insertBadgeContent('Sorry I am busy!')">Sorry I am busy!</a>
                         </div>
                     </div>
