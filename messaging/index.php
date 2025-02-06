@@ -27,7 +27,7 @@ if ($receiver_id) {
 <?php include '../includes/template/header.php'; ?>
 <?php include '../includes/template/navbar.php'; ?>
 <div class="flex-container">
-    <div class="job-thumb d-flex">
+    <div class="job-thumb d-flex" style="background-color: aliceblue;">
         <div class="chat">
             <?php if ($receiver_id): ?>
                 <h5>Chat with <?= $users[array_search($receiver_id, array_column($users, 'id'))]['email'] ?></h5>
