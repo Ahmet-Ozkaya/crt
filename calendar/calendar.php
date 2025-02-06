@@ -133,8 +133,9 @@ if (!$result) {
                         <?php foreach ($bookings as $booking): ?> {
                                 title: "<?php echo addslashes($booking['full_name']) . ' - ' . addslashes($booking['status']); ?>",
                                 start: "<?php echo $booking['booking_date']; ?>",
-                                allDay: true,
+                                allDay: false,
                                 className: "<?php echo $booking['status']; ?>",
+                                end: "<?php echo date('Y-m-d H:i:s', strtotime($booking['booking_date'] . ' +1 hour')); ?>",
                             },
                         <?php endforeach; ?>
                     <?php endif; ?>
