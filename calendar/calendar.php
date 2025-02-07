@@ -10,10 +10,18 @@ $query = "SELECT e.company_name AS employer_name, em.full_name AS employee_name,
                       JOIN employers e ON b.employer_id = e.id
                       JOIN employees em ON b.employee_id = em.id";
 */
+/*
 $stmt = $conn->prepare("SELECT `bookings`.*, `employees`.*
 FROM `bookings`
 LEFT JOIN `employees` ON `bookings`.`employee_id` = `employees`.`user_id`
 WHERE `employee_id` = ?");
+*/
+$stmt = $conn->prepare("SELECT `bookings`.*, `employees`.*, `employers`.*
+FROM `bookings` 
+	LEFT JOIN `employees` ON `bookings`.`employee_id` = `employees`.`user_id` 
+	LEFT JOIN `employers` ON `bookings`.`employer_id` = `employers`.`user_id`
+WHERE `bookings`.`employee_id` = ?;");
+
 $stmt->bind_param("i", $employee_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -139,7 +147,7 @@ echo "<script> console . log($employee_id);</script>";
                 events: [
                     <?php if (is_array($bookings) && count($bookings) > 0): ?>
                         <?php foreach ($bookings as $booking): ?> {
-                                title: "<?php echo addslashes($booking['full_name']) . ' - ' . addslashes($booking['status']); ?>",
+                                title: "<?php echo addslashes($booking['full_name']) . ' @ ' . addslashes($booking['company_name']) . ' - [' . addslashes($booking['status']); ?>]",
                                 start: "<?php echo $booking['booking_date']; ?>",
                                 allDay: false,
                                 className: "<?php echo $booking['status']; ?>",
