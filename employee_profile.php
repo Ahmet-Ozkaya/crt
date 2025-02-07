@@ -116,5 +116,6 @@
     </div>
     <div class="job-section-btn-wrap">
         <a href="edit_employee.php?id=<?= $employee['id'] ?>" class="custom-btn btn ms-2">Edit Employee</a>
+        <a href="/calendar/calendar.php?id=<?= $employee['id'] ?>" class="custom-btn btn ms-2">Employee Calendar</a>
     </div>
 </div>

@@ -5,8 +5,8 @@ include 'includes/template/navbar.php';
 include 'includes/template/site-headerjd.php';
 
 // Get employee ID from query string
-//$employee_id = $_GET['id'] ?? 0;
-$employee_id = 1;
+$employee_id = $_GET['id'] ?? 0;
+//$employee_id = 1;
 
 
 // Fetch employee data

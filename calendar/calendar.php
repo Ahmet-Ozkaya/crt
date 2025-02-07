@@ -1,6 +1,8 @@
 <?php
 require '../db.php'; // Include the database connection file
-
+// Get employee ID from query string
+$employee_id = $_GET['id'] ?? 0;
+//$employee_id = 12;
 // Fetch data from the database
 /*
 $query = "SELECT e.company_name AS employer_name, em.full_name AS employee_name, b.status, b.booking_date
@@ -8,17 +10,23 @@ $query = "SELECT e.company_name AS employer_name, em.full_name AS employee_name,
                       JOIN employers e ON b.employer_id = e.id
                       JOIN employees em ON b.employee_id = em.id";
 */
-$query = "SELECT `bookings`.*, `employees`.*
-FROM `bookings` 
-	LEFT JOIN `employees` ON `bookings`.`employee_id` = `employees`.`user_id`;";
-
-$result = mysqli_query($conn, $query);
+$stmt = $conn->prepare("SELECT `bookings`.*, `employees`.*
+FROM `bookings`
+LEFT JOIN `employees` ON `bookings`.`employee_id` = `employees`.`user_id`
+WHERE `employee_id` = ?");
+$stmt->bind_param("i", $employee_id);
+$stmt->execute();
+$result = $stmt->get_result();
 if (!$result) {
     error_log("Query failed: " . mysqli_error($conn));
     $bookings = [];
 } else {
     $bookings = mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
+$stmt->close();
+
+echo "<script> console . log($employee_id);</script>";
+
 ?>
 <!DOCTYPE html>
 <html>
