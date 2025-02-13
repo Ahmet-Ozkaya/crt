@@ -1,13 +1,18 @@
 <?php
+//include '../includes/template/header.php';
+//include '../includes/template/navbar.php';
+
 // Include the database connection file
 require '../db.php';
 // Get employee ID from query string
 $employee_id = $_GET['id'] ?? 0;
-//$employee_id = 12;
+
 // Fetch data from the database
-$stmt = $conn->prepare("SELECT `bookings`.*, `employees`.*, `employers`.*, `bookings`.`status` as `title` FROM `bookings` 
-LEFT JOIN `employees` ON `bookings`.`employee_id` = `employees`.`user_id` 
-LEFT JOIN `employers` ON `bookings`.`employer_id` = `employers`.`user_id` 
+$stmt = $conn->prepare("SELECT `bookings`.`start`, `employees`.*, `employers`.`company_name`, `bookings`.`end`, `bookings`.`status`, `employees`.`full_name` as title, `jobs`.`location`, `bookings`.*
+FROM `bookings` 
+    LEFT JOIN `employees` ON `bookings`.`employee_id` = `employees`.`user_id` 
+    LEFT JOIN `employers` ON `bookings`.`employer_id` = `employers`.`user_id` 
+    LEFT JOIN `jobs` ON `jobs`.`employer_id` = `employers`.`id` 
 WHERE `bookings`.`employee_id` = ?;");
 
 $stmt->bind_param("i", $employee_id);
@@ -21,9 +26,8 @@ if (!$result) {
 }
 $stmt->close();
 
-echo "<script> console . log($employee_id);</script>";
-
-
+// Debugging: Log fetched data to console
+echo "<script>console.log(" . json_encode($bookings) . ");</script>";
 ?>
 <!DOCTYPE html>
 <html>
@@ -45,63 +49,19 @@ echo "<script> console . log($employee_id);</script>";
                 navLinks: true, // can click day/week names to navigate views
                 editable: true,
                 dayMaxEvents: true, // allow "more" link when too many events
-                events: [{
-                        title: 'All Day Event',
-                        start: '2025-02-01'
-                    },
-                    {
-                        title: 'Long Event',
-                        start: '2025-02-07',
-                        end: '2025-02-10'
-                    },
-                    {
-                        groupId: 999,
-                        title: 'Repeating Event',
-                        start: '2025-02-09T16:00:00'
-                    },
-                    {
-                        groupId: 999,
-                        title: 'Repeating Event',
-                        start: '2025-02-16T16:00:00'
-                    },
-                    {
-                        title: 'Conference',
-                        start: '2025-02-11',
-                        end: '2025-02-13'
-                    },
-                    {
-                        title: 'Meeting',
-                        start: '2025-02-12T10:30:00',
-                        end: '2025-02-12T12:30:00'
-                    },
-                    {
-                        title: 'Lunch',
-                        start: '2025-02-12T12:00:00'
-                    },
-                    {
-                        title: 'Meeting',
-                        start: '2025-02-12T14:30:00'
-                    },
-                    {
-                        title: 'Happy Hour',
-                        start: '2025-02-12T17:30:00'
-                    },
-                    {
-                        title: 'Dinner',
-                        start: '2025-02-12T20:00:00'
-                    },
-                    {
-                        title: 'Birthday Party',
-                        start: '2025-02-13T07:00:00'
-                    },
-                    /*Future Feature
-                    {
-                        title: 'Click for Google',
-                        url: 'http://google.com/',
-                        start: '2025-02-28'
-                    }
-                    */
-                ]
+                events: function(fetchInfo, successCallback, failureCallback) {
+                    console.log("Fetching events...");
+                    var events = <?php echo json_encode($bookings); ?>;
+                    var formattedEvents = events.map(function(event) {
+                        return {
+                            title: event.title,
+                            start: new Date(event.start),
+                            end: new Date(event.end)
+                        };
+                    });
+                    console.log("Formatted Events:", formattedEvents);
+                    successCallback(formattedEvents);
+                }
             });
 
             calendar.render();
@@ -127,5 +87,3 @@ echo "<script> console . log($employee_id);</script>";
     <div id='calendar'></div>
 
 </body>
-
-</html>

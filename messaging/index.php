@@ -58,7 +58,7 @@ if ($receiver_id) {
             <?php endif; ?>
         </div>
     </div>
-    <?php require '../includes/template/footer.php'; ?>
+    <?php include '../includes/template/footer.php'; ?>
     </body>
     <script>
         function insertBadgeContent(content) {
